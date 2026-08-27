@@ -1,0 +1,22 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: blueprints-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: blueprints
+      POSTGRES_USER: blueprints
+      POSTGRES_PASSWORD: blueprints
+    ports:
+      - "5433:5432"
+    volumes:
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - blueprints_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U blueprints -d blueprints"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  blueprints_pgdata:
