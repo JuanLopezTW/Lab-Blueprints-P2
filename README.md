@@ -108,6 +108,86 @@ src/main/java/edu/eci/arsw/blueprints
 
 ---
 
+## Evidencias
+
+1. punto 1
+
+
+2. Punto 2 Migracion a postgres
+
+La migracion a posgres se realizo usando una estructura de persistencia relacional dividida en 3 paquetes:
+
+- Entity: clases que mapean el dominio a tablas con JPA (BlueprintEntity → tabla blueprints, PointEmbeddable → tabla blueprint_points).
+
+- Mapper: convierte entre las entidades JPA y el modelo de dominio (Blueprint, Point), para que el resto de la app no dependa de JPA.
+
+- Repository: interfaz de Spring Data JPA (BlueprintJpaRepository) que genera las consultas SQL automáticamente, sin necesidad de implementarla a mano.
+
+![CurlDePruebaALocalHost.png](docs/img/punto2/CurlDePruebaALocalHost.png)
+
+Se realizo la prueba del local host mediante los curls
+
+- GET - listar todos los blueprints
+curl.exe http://localhost:8080/blueprints
+
+- GET - blueprints de un autor
+curl.exe http://localhost:8080/blueprints/john
+
+- GET - un blueprint específico
+curl.exe http://localhost:8080/blueprints/john/house
+
+- POST - crear un blueprint nuevo
+curl.exe -X POST http://localhost:8080/blueprints -H "Content-Type: application/json" -d "{\"author\":\"maria\",\"name\":\"office\",\"points\":[{\"x\":1,\"y\":1},{\"x\":2,\"y\":2}]}"
+
+- PUT - agregar un punto a un blueprint existente
+curl.exe -X PUT http://localhost:8080/blueprints/john/house/points -H "Content-Type: application/json" -d "{\"x\":99,\"y\":99}"
+
+![EvidenciaEnBaseDatos.png](docs/img/punto2/EvidenciaEnBaseDatos.png)
+
+Estas insorciones se verificaron en la base de datos mediante consultas realizadas con los comandos
+
+- docker exec -it blueprints-db psql -U blueprints -d blueprints -c "SELECT * FROM blueprints;"
+- docker exec -it blueprints-db psql -U blueprints -d blueprints -c "SELECT * FROM blueprint_points ORDER BY blueprint_id, point_order;"
+
+Pudiendo evidencidenciar la correcta insorcion del post y la modificacion del post
+
+El Readme con la guia para inizializar la base de datos en docker se encuentra en la carpeta llamada
+docker
+
+
+
+
+
+#### Punto 5
+
+Ya que identityFilter no tenia asignado un "profile" al intentar correr la aplicacion con algun pefil
+esto hacia que explotara añadiendo la condicion que solo se active si uno de los 2 perfiles esta activo evitamos ese problema
+"@Profile("!redundancy & !undersampling")"
+
+una vez arreglado el conflicto de perfiles se hizo una insorcion en la base de datos 
+con un curl de prueba
+
+![BaseDeDatosCruta.png](docs/img/punto5/BaseDeDatosCruta.png)
+
+![curlDePrueba.png](docs/img/punto5/curlDePrueba.png)
+
+Luego inizalizamos la aplicacion con el pefil de redundancy usando el comando:
+
+mvn spring-boot:run "-Dspring-boot.run.profiles=redundancy"
+
+![PerfilRedundancia.png](docs/img/punto5/PerfilRedundancia.png)
+
+y con esto podemos observar que los puntos se devuelven sin repetidos consecutivos
+
+Siguiendo el mismo proceso hicimos los mismo con undersampling
+
+mvn spring-boot:run "-Dspring-boot.run.profiles=undersampling"
+
+![PerfilUndersampling.png](docs/img/punto5/PerfilUndersampling.png)
+
+y podemos observar como borro la mitad de los puntos ya que eran 6 pero si un orden especifico
+
+
 ## 📊 Criterios de evaluación
 
 | Criterio | Peso |
