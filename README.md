@@ -1,4 +1,5 @@
 ## Laboratorio #4 – REST API Blueprints (Java 21 / Spring Boot 3.3.x)
+#### Juan Manuel López Barrera - Laura Valentina Santiago Marquez
 # Escuela Colombiana de Ingeniería – Arquitecturas de Software  
 
 ---
