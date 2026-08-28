@@ -80,10 +80,46 @@ src/main/java/edu/eci/arsw/blueprints
   }
   ```
 
+Se actualizó el controlador `BlueprintsAPIController` aplicando las siguientes mejoras:
+
+![Path base](docs/img/punto3/cambiarpathbase.png)
+
+- **Versionamiento de la API**: se cambió el path base de `/blueprints` a `/api/v1/blueprints`, siguiendo la convención de versionar los endpoints desde la URL.
+
+- **Respuesta uniforme con `ApiResponse<T>`**: se creó un record genérico en el paquete `dto` que envuelve todas las respuestas del API con un código, un mensaje y los datos:
+
+```java
+  public record ApiResponse<T>(int code, String message, T data) {}
+```
+
+Esto aplica tanto para respuestas exitosas como para errores, manteniendo un formato consistente en todo el API.
+
+- **Códigos HTTP correctos**: cada endpoint retorna el código apropiado según el resultado de la operación:
+    - `200 OK` en las consultas (`GET`).
+    - `201 Created` al crear un blueprint nuevo.
+    - `202 Accepted` al actualizar un blueprint existente (agregar un punto).
+    - `400 Bad Request` cuando la creación falla por datos inválidos o conflicto de persistencia.
+    - `404 Not Found` cuando el autor o el blueprint solicitado no existe.
+
+![Codigos HTTP](docs/img/punto3/estados.png)
+
+###### Manejo de excepciones
+
+![Excepciones](docs/img/punto3/exception.png)
+
 ### 4. OpenAPI / Swagger
 - Configura `springdoc-openapi` en el proyecto.  
 - Expón documentación automática en `/swagger-ui.html`.  
 - Anota endpoints con `@Operation` y `@ApiResponse`.
+
+
+Verificación de swagger
+
+![Swagger](docs/img/punto4/swagger.png)
+
+Se observan los 5 endpoints agrupados bajo el tag "Blueprints", con la ruta versionada `/api/v1/blueprints` y una descripción corta de cada operación.
+
+![endpoints](docs/img/punto4/metodos.png)
 
 ### 5. Filtros de *Blueprints*
 - Implementa filtros:
