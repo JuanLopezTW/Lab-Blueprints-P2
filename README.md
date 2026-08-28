@@ -76,7 +76,8 @@ src/main/java/edu/eci/arsw/blueprints
   {
     "code": 200,
     "message": "execute ok",
-    "data": { "author": "john", "name": "house", "points": [...] }
+    "data": { "author": "john", "name": "house", "points":[{ "x": 1, "y": 1 },
+    { "x": 2, "y": 2 }]}
   }
   ```
 
