@@ -17,3 +17,8 @@ spring:
         dialect: org.hibernate.dialect.PostgreSQLDialect
     show-sql: true
     open-in-view: false
+
+blueprints:
+  security:
+    issuer: "https://eci/blueprints"
+    token-ttl-seconds: 3600
