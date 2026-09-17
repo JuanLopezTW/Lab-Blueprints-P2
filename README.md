@@ -2,7 +2,8 @@
 ## Arquitectura de Software – ARSW
 
 
-### Juan Manuel Lopez Barrera 
+### Juan Manuel López Barrera - Laura Valentina Santiago Marquez
+
 
 ### Laboratorio – Parte 2: BluePrints API con Seguridad JWT (OAuth 2.0)
 
