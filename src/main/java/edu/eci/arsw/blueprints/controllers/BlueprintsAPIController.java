@@ -14,7 +14,7 @@ import jakarta.validation.constraints.NotBlank;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import java.util.Set;
 
 @Tag(name = "Blueprints", description = "Operaciones sobre planos (blueprints)")
@@ -29,6 +29,7 @@ public class BlueprintsAPIController {
     // GET /blueprints
     @Operation(summary = "Obtener todos los blueprints")
     @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Consulta exitosa")
+    @PreAuthorize("hasAuthority('SCOPE_blueprints.read')")
     @GetMapping
     public ResponseEntity<ApiResponse<Set<Blueprint>>> getAll() {
         return ResponseEntity.status(HttpStatus.OK)
@@ -41,6 +42,7 @@ public class BlueprintsAPIController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Consulta exitosa"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Autor no encontrado")
     })
+    @PreAuthorize("hasAuthority('SCOPE_blueprints.read')")
     @GetMapping("/{author}")
     public ResponseEntity<ApiResponse<?>> byAuthor(@Parameter(description = "Nombre del autor") @PathVariable String author) {
         try {
@@ -58,6 +60,7 @@ public class BlueprintsAPIController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "200", description = "Consulta exitosa"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Blueprint no encontrado")
     })
+    @PreAuthorize("hasAuthority('SCOPE_blueprints.read')")
     @GetMapping("/{author}/{bpname}")
     public ResponseEntity<ApiResponse<?>> byAuthorAndName(@Parameter(description = "Nombre del autor") @PathVariable String author,
                                                           @Parameter(description = "Nombre del blueprint") @PathVariable String bpname) {
@@ -76,6 +79,7 @@ public class BlueprintsAPIController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "201", description = "Blueprint creado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "400", description = "Datos inválidos")
     })
+    @PreAuthorize("hasAuthority('SCOPE_blueprints.write')")
     @PostMapping
     public ResponseEntity<ApiResponse<?>> add(@Valid @RequestBody NewBlueprintRequest req) {
         try {
@@ -95,6 +99,7 @@ public class BlueprintsAPIController {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "202", description = "Punto agregado"),
             @io.swagger.v3.oas.annotations.responses.ApiResponse(responseCode = "404", description = "Blueprint no encontrado")
     })
+    @PreAuthorize("hasAuthority('SCOPE_blueprints.write')")
     @PutMapping("/{author}/{bpname}/points")
     public ResponseEntity<ApiResponse<?>> addPoint(@Parameter(description = "Nombre del autor") @PathVariable String author,
                                                    @Parameter(description = "Nombre del blueprint") @PathVariable String bpname,
