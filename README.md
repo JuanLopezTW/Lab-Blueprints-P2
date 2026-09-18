@@ -176,9 +176,35 @@ esta vez si da un 201 Denotando que se creo con exito.
 
 
 4. Modificar el tiempo de expiración del token y observar el efecto.
+
+Se modificó la propiedad blueprints.security.token-ttl-seconds en application.yml, reduciéndola de 3600 a 30 segundos, 
+para observar el efecto de la expiración del JWT. Tras reiniciar la aplicación, se generó un token mediante POST /auth/login y 
+se usó de inmediato en GET /api/v1/blueprints, obteniendo una respuesta 200 OK. Al reutilizar el mismo token pasados los 30 segundos, 
+la API respondió 401 Unauthorized, confirmando que el Resource Server valida correctamente la claim exp del JWT y 
+rechaza tokens expirados sin necesidad de lógica adicional en el código — el comportamiento es controlado enteramente por la configuración.
+
+#### Evidencias
+
+![POST inicial](docs/lab2/punto4/post.png)
+
+![GET_EXITOSO](docs/lab2/punto4/post_EXITOSO.png)
+
+![GET_FALLIDO](docs/lab2/punto4/post_Noautorizado.png)
+
 5. Documentar en Swagger los endpoints de autenticación y de negocio.
 
----
+Se documentaron los endpoints de autenticación (`POST /auth/login`) y de negocio (`/api/v1/blueprints/**`) usando anotaciones de `springdoc-openapi` (`@Tag`, `@Operation`, `@ApiResponses`).
+
+- El controlador BlueprintsAPIController ya contaba con documentación detallada de cada operación (GET, POST, PUT), incluyendo los scopes requeridos (blueprints.read / blueprints.write) reflejados mediante @PreAuthorize, todo esto realizado en la primera parte del laboratorio.
+- Se agregó documentación equivalente al AuthController, agrupándolo bajo el tag "Autenticación", con la descripción del flujo de login (validación de credenciales y emisión de un JWT con los scopes correspondientes al usuario) y los posibles códigos de respuesta (`200` login exitoso, `401` credenciales inválidas).
+- El esquema de seguridad Bearer JWT está configurado globalmente en `OpenApiConfig`, permitiendo autorizar todas las peticiones protegidas desde el botón Authorize de Swagger UI.
+
+#### Evidencias
+
+![Swagger_Blueprints](docs/lab2/punto5/swagger_blueprints.png)
+
+![Swagger_Autenticacion](docs/lab2/punto5/swagger_autenticacion.png)
+
 
 ## Lecturas recomendadas
 - [Spring Security Reference – OAuth2 Resource Server](https://docs.spring.io/spring-security/reference/servlet/oauth2/resource-server/index.html)

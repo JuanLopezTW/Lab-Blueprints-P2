@@ -2,6 +2,10 @@ package edu.eci.arsw.blueprints.Auth;
 
 import edu.eci.arsw.blueprints.security.InMemoryUserService;
 import edu.eci.arsw.blueprints.security.RsaKeyProperties;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.time.Instant;
 import java.util.Map;
 
+@Tag(name = "Autenticación", description = "Endpoint para login y emisión de JWT")
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -29,6 +34,12 @@ public class AuthController {
     public record LoginRequest(String username, String password) {}
     public record TokenResponse(String access_token, String token_type, long expires_in) {}
 
+    @Operation(summary = "Iniciar sesión",
+            description = "Valida usuario y contraseña, y retorna un access_token JWT firmado en RS256 con los scopes correspondientes al usuario")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Login exitoso, token emitido"),
+            @ApiResponse(responseCode = "401", description = "Credenciales inválidas")
+    })
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest req) {
         if (!userService.isValid(req.username(), req.password())) {
